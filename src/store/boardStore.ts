@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface BoardState {
+interface IBoardState {
   x: number;
   y: number;
   zoom: number;
@@ -9,7 +9,7 @@ interface BoardState {
   setZoom: (zoom: number) => void;
 }
 
-export const useBoardStore = create<BoardState>((set) => ({
+export const useBoardStore = create<IBoardState>((set) => ({
   x: 0,
   y: 0,
   zoom: 1,

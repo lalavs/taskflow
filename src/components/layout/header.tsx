@@ -6,14 +6,12 @@ export const Header = () => {
   return (
     <header className="border-b">
       <Container className="flex h-16 items-center justify-between">
-          <Logo />
+        <Logo />
 
-          <nav className="flex gap-4">
-            <Button variant="secondary">
-              Login
-            </Button>
-            <Button>Get Started</Button>
-          </nav>
+        <nav className="flex gap-4">
+          <Button variant="secondary">Login</Button>
+          <Button>Get Started</Button>
+        </nav>
       </Container>
     </header>
   );
