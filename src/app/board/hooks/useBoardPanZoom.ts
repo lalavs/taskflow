@@ -2,7 +2,12 @@ import { useCallback, useRef } from 'react';
 import { useBoardStore } from '@/store/boardStore';
 
 export const useBoardPanZoom = () => {
-  const { x, y, zoom, setPosition, setZoom } = useBoardStore();
+  const x = useBoardStore((state) => state.x);
+  const y = useBoardStore((state) => state.y);
+  const zoom = useBoardStore((state) => state.zoom);
+
+  const setPosition = useBoardStore((state) => state.setPosition);
+  const setZoom = useBoardStore((state) => state.setZoom);
 
   const isDragging = useRef(false);
   const last = useRef({ x: 0, y: 0 });
@@ -33,8 +38,10 @@ export const useBoardPanZoom = () => {
   const onWheel = useCallback(
     (e: React.WheelEvent) => {
       e.preventDefault();
+
       const delta = -e.deltaY * 0.001;
       const newZoom = Math.min(Math.max(zoom + delta, 0.1), 5);
+
       setZoom(newZoom);
     },
     [zoom, setZoom],
