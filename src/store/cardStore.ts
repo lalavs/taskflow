@@ -9,19 +9,18 @@ export interface ICard {
 
 interface ICardState {
   cards: ICard[];
+  selectedCardId: string | null;
+
   addCard: (card: ICard) => void;
   moveCard: (id: string, x: number, y: number) => void;
+  updateCardContent: (id: string, content: string) => void;
+  setSelectedCardId: (id: string | null) => void;
+  deleteCard: (id: string) => void;
 }
 
 export const useCardStore = create<ICardState>((set) => ({
-  cards: [
-    {
-      id: '1',
-      x: 200,
-      y: 200,
-      content: 'First note',
-    },
-  ],
+  cards: [],
+  selectedCardId: null,
 
   addCard: (card) =>
     set((state) => ({
@@ -30,5 +29,15 @@ export const useCardStore = create<ICardState>((set) => ({
   moveCard: (id, x, y) =>
     set((state) => ({
       cards: state.cards.map((card) => (card.id === id ? { ...card, x, y } : card)),
+    })),
+  updateCardContent: (id, content) =>
+    set((state) => ({
+      cards: state.cards.map((card) => (card.id === id ? { ...card, content } : card)),
+    })),
+  setSelectedCardId: (id) => set({ selectedCardId: id }),
+  deleteCard: (id) =>
+    set((state) => ({
+      cards: state.cards.filter((card) => card.id !== id),
+      selectedCardId: state.selectedCardId === id ? null : state.selectedCardId,
     })),
 }));
