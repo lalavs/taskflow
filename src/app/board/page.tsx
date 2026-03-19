@@ -9,9 +9,12 @@ import { BoardCanvas } from './components/BoardCanvas';
 import { CardLayer } from './components/CardLayer';
 
 import { usePageActions } from './hooks/usePageActions';
+import { useNotesData } from './hooks/useNotesData';
 
 const BoardPage = () => {
   const { handleDragEnd, handleAddCard } = usePageActions();
+
+  const { save } = useNotesData();
 
   return (
     <main className="h-screen w-screen overflow-hidden">
@@ -19,9 +22,12 @@ const BoardPage = () => {
         <Container className="flex h-16 items-center justify-between">
           <Logo />
 
-          <Button className="flex items-center gap-2" onClick={handleAddCard}>
-            Add Card
-          </Button>
+          <div className="flex gap-3">
+            <Button onClick={handleAddCard}>Add Card</Button>
+
+            {/* temporary, autosave later */}
+            <Button onClick={() => save()}>Save</Button>
+          </div>
         </Container>
       </header>
 

@@ -1,0 +1,35 @@
+import { useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+
+import { useCardStore } from '@/store/cardStore';
+
+import { getNotes, saveNotes } from '@/services/notes';
+
+export const useNotesData = () => {
+  const cards = useCardStore((state) => state.cards);
+  const setCards = useCardStore((state) => state.addCard);
+
+  const query = useQuery({
+    queryKey: ['notes'],
+    queryFn: getNotes,
+  });
+
+  const mutation = useMutation({
+    mutationFn: () => saveNotes(cards),
+  });
+
+  useEffect(() => {
+    if (query.data) {
+      query.data.forEach((note: any) => {
+        setCards(note);
+      }); // temporary
+    }
+  }, [query.data, setCards]);
+
+  return {
+    isLoading: query.isLoading,
+    isError: query.isError,
+    isSaving: mutation.isPending,
+    save: mutation.mutate,
+  };
+};
