@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/db';
 
+import { INote } from '@/interfaces/notes';
+
 export async function GET() {
   try {
     const notes = await prisma.note.findMany();
@@ -22,7 +24,7 @@ export async function POST(req: Request) {
     await prisma.note.deleteMany();
 
     await prisma.note.createMany({
-      data: notes.map((note: any) => ({
+      data: notes.map((note: INote) => ({
         id: note.id,
         x: note.x,
         y: note.y,

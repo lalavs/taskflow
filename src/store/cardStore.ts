@@ -1,17 +1,12 @@
 import { create } from 'zustand';
 
-export interface ICard {
-  id: string;
-  x: number;
-  y: number;
-  content: string;
-}
+import { INote } from '@/interfaces/notes';
 
 interface ICardState {
-  cards: ICard[];
+  cards: INote[];
   selectedCardId: string | null;
 
-  addCard: (card: ICard) => void;
+  addCard: (card: INote) => void;
   moveCard: (id: string, x: number, y: number) => void;
   updateCardContent: (id: string, content: string) => void;
   setSelectedCardId: (id: string | null) => void;
