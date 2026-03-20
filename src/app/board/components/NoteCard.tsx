@@ -6,6 +6,9 @@ import clsx from 'clsx';
 
 import { useCardStore } from '@/store/cardStore';
 
+import { useDebounce } from '@/hooks/useDebounce';
+import { useNotesData } from '../hooks/useNotesData';
+
 interface INoteCardProps {
   id: string;
   x: number;
@@ -17,6 +20,8 @@ interface INoteCardProps {
 
 export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCardProps) => {
   const { attributes, listeners, transform, setNodeRef } = useDraggable({ id });
+  const { update } = useNotesData();
+  const debounce = useDebounce(500);
 
   const updateCardContent = useCardStore((state) => state.updateCardContent);
   const setSelectedCardId = useCardStore((state) => state.setSelectedCardId);
@@ -33,6 +38,23 @@ export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCard
   const onNoteClick = (e: React.MouseEvent | Event) => {
     e.stopPropagation();
     setSelectedCardId(id);
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newContent = e.target.value;
+
+    updateCardContent(id, newContent);
+
+    debounce(() => {
+      const current = useCardStore.getState().cards.find((c) => c.id === id);
+
+      if (!current) return;
+
+      update({
+        id,
+        data: current,
+      });
+    });
   };
 
   return (
@@ -54,7 +76,7 @@ export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCard
         placeholder="Add text"
         spellCheck={false}
         onClick={onNoteClick}
-        onChange={(e) => updateCardContent(id, e.target.value)}
+        onChange={onChange}
         onPointerDownCapture={(e) => e.stopPropagation()}
       />
     </div>

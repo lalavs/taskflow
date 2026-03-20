@@ -3,35 +3,37 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useCardStore } from '@/store/cardStore';
 
-import { getNotes, saveNotes } from '@/services/notes';
+import { getNotes, updateNote, deleteNote } from '@/services/notes';
 
-import { INote } from '@/interfaces/notes';
+import { INoteContent } from '@/interfaces/notes';
 
 export const useNotesData = () => {
   const cards = useCardStore((state) => state.cards);
-  const setCards = useCardStore((state) => state.addCard);
+  const setCards = useCardStore((state) => state.setCards);
 
-  const query = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['notes'],
     queryFn: getNotes,
   });
 
-  const mutation = useMutation({
-    mutationFn: () => saveNotes(cards),
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: INoteContent }) => updateNote(id, data),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteNote(id),
   });
 
   useEffect(() => {
-    if (query.data) {
-      query.data.forEach((note: INote) => {
-        setCards(note);
-      }); // temporary
+    if (data && !cards.length) {
+      setCards(data);
     }
-  }, [query.data, setCards]);
+  }, [data, setCards]);
 
   return {
-    isLoading: query.isLoading,
-    isError: query.isError,
-    isSaving: mutation.isPending,
-    save: mutation.mutate,
+    isLoading,
+    isError,
+    update: updateMutation.mutate,
+    remove: deleteMutation.mutate,
   };
 };

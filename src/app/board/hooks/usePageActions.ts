@@ -1,7 +1,11 @@
+import { useCallback, useEffect } from 'react';
+import { DragEndEvent } from '@dnd-kit/core';
+import { v4 as uuidv4 } from 'uuid';
+
 import { useBoardStore } from '@/store/boardStore';
 import { useCardStore } from '@/store/cardStore';
-import { DragEndEvent } from '@dnd-kit/core';
-import { useCallback, useEffect } from 'react';
+
+import { useNotesData } from './useNotesData';
 
 export const usePageActions = () => {
   const x = useBoardStore((state) => state.x);
@@ -12,6 +16,8 @@ export const usePageActions = () => {
   const addCard = useCardStore((state) => state.addCard);
   const deleteCard = useCardStore((state) => state.deleteCard);
 
+  const { update, remove } = useNotesData();
+
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, delta } = event;
@@ -20,9 +26,21 @@ export const usePageActions = () => {
 
       if (!card) return;
 
-      const { zoom: currentZoom } = useBoardStore.getState();
+      const { zoom } = useBoardStore.getState();
 
-      moveCard(card.id, card.x + delta.x / currentZoom, card.y + delta.y / currentZoom);
+      const newX = card.x + delta.x / zoom;
+      const newY = card.y + delta.y / zoom;
+
+      moveCard(card.id, newX, newY);
+
+      update({
+        id: card.id,
+        data: {
+          x: newX,
+          y: newY,
+          content: card.content,
+        },
+      });
     },
     [moveCard],
   );
@@ -36,11 +54,18 @@ export const usePageActions = () => {
     const boardX = (centerX - x) / zoom - cardSize / 2;
     const boardY = (centerY - y) / zoom - cardSize / 2;
 
-    addCard({
-      id: Date.now().toString(),
+    const newCard = {
+      id: uuidv4(),
       x: boardX,
       y: boardY,
       content: '',
+    };
+
+    addCard(newCard);
+
+    update({
+      id: newCard.id,
+      data: newCard,
     });
   }, [x, y, zoom, addCard]);
 
@@ -53,6 +78,8 @@ export const usePageActions = () => {
 
         if (selectedId) {
           deleteCard(selectedId);
+
+          remove(selectedId);
         }
       }
     };

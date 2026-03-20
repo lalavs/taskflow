@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { INote } from '@/interfaces/notes';
+import { INoteContent } from '@/interfaces/notes';
 
 export const getNotes = async () => {
   const res = await axios.get('/api/notes');
@@ -8,8 +8,14 @@ export const getNotes = async () => {
   return res.data;
 };
 
-export const saveNotes = async (notes: INote[]) => {
-  const res = await axios.post('/api/notes', { notes });
+export const updateNote = async (id: string, data: INoteContent) => {
+  const res = await axios.patch(`/api/notes/${id}`, data);
+
+  return res.data;
+};
+
+export const deleteNote = async (id: string) => {
+  const res = await axios.delete(`/api/notes/${id}`);
 
   return res.data;
 };

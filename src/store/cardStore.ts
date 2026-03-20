@@ -7,6 +7,7 @@ interface ICardState {
   selectedCardId: string | null;
 
   addCard: (card: INote) => void;
+  setCards: (cards: INote[]) => void;
   moveCard: (id: string, x: number, y: number) => void;
   updateCardContent: (id: string, content: string) => void;
   setSelectedCardId: (id: string | null) => void;
@@ -21,6 +22,7 @@ export const useCardStore = create<ICardState>((set) => ({
     set((state) => ({
       cards: [...state.cards, card],
     })),
+  setCards: (cards) => set({ cards }),
   moveCard: (id, x, y) =>
     set((state) => ({
       cards: state.cards.map((card) => (card.id === id ? { ...card, x, y } : card)),
