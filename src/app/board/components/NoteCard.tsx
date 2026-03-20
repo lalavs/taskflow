@@ -4,10 +4,11 @@ import { memo } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import clsx from 'clsx';
 
+import { updateNote } from '@/services/notes';
+
 import { useCardStore } from '@/store/cardStore';
 
 import { useDebounce } from '@/hooks/useDebounce';
-import { useNotesData } from '../hooks/useNotesData';
 
 interface INoteCardProps {
   id: string;
@@ -20,7 +21,6 @@ interface INoteCardProps {
 
 export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCardProps) => {
   const { attributes, listeners, transform, setNodeRef } = useDraggable({ id });
-  const { update } = useNotesData();
   const debounce = useDebounce(500);
 
   const updateCardContent = useCardStore((state) => state.updateCardContent);
@@ -50,10 +50,7 @@ export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCard
 
       if (!current) return;
 
-      update({
-        id,
-        data: current,
-      });
+      updateNote(id, current);
     });
   };
 

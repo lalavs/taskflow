@@ -2,10 +2,10 @@ import { useCallback, useEffect } from 'react';
 import { DragEndEvent } from '@dnd-kit/core';
 import { v4 as uuidv4 } from 'uuid';
 
+import { updateNote, deleteNote } from '@/services/notes';
+
 import { useBoardStore } from '@/store/boardStore';
 import { useCardStore } from '@/store/cardStore';
-
-import { useNotesData } from './useNotesData';
 
 export const usePageActions = () => {
   const x = useBoardStore((state) => state.x);
@@ -15,8 +15,6 @@ export const usePageActions = () => {
   const moveCard = useCardStore((state) => state.moveCard);
   const addCard = useCardStore((state) => state.addCard);
   const deleteCard = useCardStore((state) => state.deleteCard);
-
-  const { update, remove } = useNotesData();
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -33,14 +31,7 @@ export const usePageActions = () => {
 
       moveCard(card.id, newX, newY);
 
-      update({
-        id: card.id,
-        data: {
-          x: newX,
-          y: newY,
-          content: card.content,
-        },
-      });
+      updateNote(card.id, { x: newX, y: newY, content: card.content });
     },
     [moveCard],
   );
@@ -63,10 +54,7 @@ export const usePageActions = () => {
 
     addCard(newCard);
 
-    update({
-      id: newCard.id,
-      data: newCard,
-    });
+    updateNote( newCard.id, newCard);
   }, [x, y, zoom, addCard]);
 
   useEffect(() => {
@@ -79,7 +67,7 @@ export const usePageActions = () => {
         if (selectedId) {
           deleteCard(selectedId);
 
-          remove(selectedId);
+          deleteNote(selectedId);
         }
       }
     };
