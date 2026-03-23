@@ -31,7 +31,7 @@ export const usePageActions = () => {
 
       moveCard(card.id, newX, newY);
 
-      updateNote(card.id, { x: newX, y: newY, content: card.content });
+      updateNote(card.id, { x: newX, y: newY, content: card.content, height: card.height });
     },
     [moveCard],
   );
@@ -50,6 +50,7 @@ export const usePageActions = () => {
       x: boardX,
       y: boardY,
       content: '',
+      height: 96,
     };
 
     addCard(newCard);

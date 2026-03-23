@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import clsx from 'clsx';
 
@@ -15,15 +15,18 @@ interface INoteCardProps {
   x: number;
   y: number;
   content: string;
+  height: number;
   zoom: number;
   isSelected: boolean;
 }
 
-export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCardProps) => {
+export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: INoteCardProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const { attributes, listeners, transform, setNodeRef } = useDraggable({ id });
   const debounce = useDebounce(500);
 
-  const updateCardContent = useCardStore((state) => state.updateCardContent);
+  const updateCard = useCardStore((state) => state.updateCard);
   const setSelectedCardId = useCardStore((state) => state.setSelectedCardId);
 
   const style = {
@@ -41,9 +44,15 @@ export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCard
   };
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newContent = e.target.value;
+    const textarea = e.target;
 
-    updateCardContent(id, newContent);
+    const newContent = textarea.value;
+    const newHeight = textarea.scrollHeight;
+
+    textarea.style.height = 'auto';
+    textarea.style.height = `${newHeight}px`;
+
+    updateCard(id, { content: newContent, height: newHeight });
 
     debounce(() => {
       const current = useCardStore.getState().cards.find((c) => c.id === id);
@@ -62,14 +71,16 @@ export const NoteCard = memo(({ id, x, y, content, zoom, isSelected }: INoteCard
       {...attributes}
       suppressHydrationWarning
       className={clsx(
-        'w-48 p-4 rounded-md shadow cursor-move transition-shadow duration-200',
-        isSelected ? 'ring-2 ring-blue-400 bg-yellow-100' : 'bg-yellow-200',
+        'p-7 rounded-md shadow cursor-move transition-shadow duration-200',
+        isSelected ? 'ring-2 ring-blue-400 bg-orange-100' : 'bg-orange-200',
       )}
       onClick={onNoteClick}
     >
       <textarea
+        ref={textareaRef}
         value={content}
-        className="bg-transparent resize-none focus:outline-none text-gray-800 text-sm"
+        className="bg-transparent resize-none focus:outline-none text-gray-800 text-sm h-auto [&::-webkit-scrollbar]:hidden"
+        style={{ height }}
         placeholder="Add text"
         spellCheck={false}
         onClick={onNoteClick}

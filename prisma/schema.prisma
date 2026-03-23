@@ -11,6 +11,7 @@ model Note {
   x       Float
   y       Float
   content String
+  height  Float @default(96)
 
   @@map("notes")
 }

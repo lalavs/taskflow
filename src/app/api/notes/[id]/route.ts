@@ -14,12 +14,14 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         x: body.x,
         y: body.y,
         content: body.content,
+        height: body.height,
       },
       create: {
         id: id,
         x: body.x,
         y: body.y,
         content: body.content,
+        height: body.height,
       },
     });
 

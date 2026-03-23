@@ -21,6 +21,7 @@ interface IBoardClientProps {
 
 const BoardClient = ({ initialNotes }: IBoardClientProps) => {
   const setCards = useCardStore((state) => state.setCards);
+
   const { handleDragEnd, handleAddCard } = usePageActions();
 
   useEffect(() => {
