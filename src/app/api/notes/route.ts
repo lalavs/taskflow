@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 
-import { prisma } from '@/lib/db';
+import { getAllNotes } from '@/entities/note/model/note.repo';
 
 export async function GET() {
   try {
-    const notes = await prisma.note.findMany();
+    const notes = await getAllNotes();
 
     return NextResponse.json(notes);
   } catch (error) {

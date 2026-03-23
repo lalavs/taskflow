@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import clsx from 'clsx';
 
-import { updateNote } from '@/services/notes';
+import { updateNote } from '@/entities/note/api/note.api';
 
 import { useCardStore } from '@/store/cardStore';
 

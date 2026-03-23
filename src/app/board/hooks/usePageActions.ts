@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { DragEndEvent } from '@dnd-kit/core';
 import { v4 as uuidv4 } from 'uuid';
 
-import { updateNote, deleteNote } from '@/services/notes';
+import { updateNote, deleteNote } from '@/entities/note/api/note.api';
 
 import { useBoardStore } from '@/store/boardStore';
 import { useCardStore } from '@/store/cardStore';
@@ -54,7 +54,7 @@ export const usePageActions = () => {
 
     addCard(newCard);
 
-    updateNote( newCard.id, newCard);
+    updateNote(newCard.id, newCard);
   }, [x, y, zoom, addCard]);
 
   useEffect(() => {
