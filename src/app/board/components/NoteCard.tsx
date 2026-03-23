@@ -1,13 +1,11 @@
 'use client';
 
-import { memo, useRef } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import clsx from 'clsx';
 
 import { updateNote } from '@/entities/note/api/note.api';
-
 import { useCardStore } from '@/store/cardStore';
-
 import { useDebounce } from '@/hooks/useDebounce';
 
 interface INoteCardProps {
@@ -23,6 +21,8 @@ interface INoteCardProps {
 export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: INoteCardProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const [isEditing, setIsEditing] = useState(false);
+
   const { attributes, listeners, transform, setNodeRef } = useDraggable({ id });
   const debounce = useDebounce(500);
 
@@ -35,12 +35,18 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: I
     top: y,
     transform: transform ? `translate(${transform.x / zoom}px, ${transform.y / zoom}px)` : undefined,
     willChange: transform ? 'transform' : 'auto',
-    zIndex: isSelected ? 10 : 1,
   };
 
-  const onNoteClick = (e: React.MouseEvent | Event) => {
+  const dragListeners = isEditing ? undefined : listeners;
+
+  const onNoteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setSelectedCardId(id);
+  };
+
+  const onDoubleNoteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
   };
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -63,29 +69,43 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: I
     });
   };
 
+  const onBlur = () => {
+    setIsEditing(false);
+  };
+
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isEditing, content]);
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      {...listeners}
+      {...dragListeners}
       {...attributes}
       suppressHydrationWarning
       className={clsx(
-        'p-7 rounded-md shadow cursor-move transition-shadow duration-200',
-        isSelected ? 'ring-2 ring-blue-400 bg-orange-100' : 'bg-orange-200',
+        'w-72 p-7 rounded-md shadow transition-shadow duration-200 select-none',
+        isSelected && 'ring-2 ring-blue-400',
+        isEditing ? ' bg-orange-100 cursor-text' : 'bg-orange-200 cursor-move',
       )}
       onClick={onNoteClick}
+      onDoubleClick={onDoubleNoteClick}
     >
       <textarea
         ref={textareaRef}
         value={content}
-        className="bg-transparent resize-none focus:outline-none text-gray-800 text-sm h-auto [&::-webkit-scrollbar]:hidden"
+        className={clsx(
+          'bg-transparent resize-none focus:outline-none text-gray-800 text-sm w-full [&::-webkit-scrollbar]:hidden',
+          !isEditing && 'pointer-events-none',
+        )}
         style={{ height }}
         placeholder="Add text"
         spellCheck={false}
-        onClick={onNoteClick}
+        onBlur={onBlur}
         onChange={onChange}
-        onPointerDownCapture={(e) => e.stopPropagation()}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
@@ -24,6 +24,14 @@ const BoardClient = ({ initialNotes }: IBoardClientProps) => {
 
   const { handleDragEnd, handleAddCard } = usePageActions();
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 6,
+      },
+    }),
+  );
+
   useEffect(() => {
     setCards(initialNotes);
   }, [initialNotes, setCards]);
@@ -37,7 +45,7 @@ const BoardClient = ({ initialNotes }: IBoardClientProps) => {
         </Container>
       </header>
 
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <BoardCanvas>
           <CardLayer />
         </BoardCanvas>
