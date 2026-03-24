@@ -15,3 +15,12 @@ model Note {
 
   @@map("notes")
 }
+
+model BoardView {
+  id    String @id @default("default")
+  x     Float  @default(0)
+  y     Float  @default(0)
+  zoom  Float  @default(1)
+
+  @@map("board_views")
+}

@@ -10,17 +10,21 @@ import { BoardCanvas } from './components/BoardCanvas';
 import { CardLayer } from './components/CardLayer';
 
 import { useCardStore } from '@/store/cardStore';
+import { useBoardStore } from '@/store/boardStore';
 
 import { usePageActions } from './hooks/usePageActions';
 
 import { INote } from '@/interfaces/notes';
+import { IBoard } from '@/interfaces/board';
 
 interface IBoardClientProps {
   initialNotes: INote[];
+  initialView: IBoard;
 }
 
-const BoardClient = ({ initialNotes }: IBoardClientProps) => {
+const BoardClient = ({ initialNotes, initialView }: IBoardClientProps) => {
   const setCards = useCardStore((state) => state.setCards);
+  const initializeState = useBoardStore((state) => state.initializeState);
 
   const { handleDragEnd, handleAddCard } = usePageActions();
 
@@ -34,13 +38,15 @@ const BoardClient = ({ initialNotes }: IBoardClientProps) => {
 
   useEffect(() => {
     setCards(initialNotes);
-  }, [initialNotes, setCards]);
+    initializeState(initialView);
+  }, [initialNotes, initialView, setCards, initializeState]);
 
   return (
     <main className="h-screen w-screen overflow-hidden">
       <header className="fixed top-0 left-0 w-full z-9999 h-16 bg-gray-50 shadow-sm">
         <Container className="flex h-16 items-center justify-between">
           <Logo />
+
           <Button onClick={handleAddCard}>Add Card</Button>
         </Container>
       </header>

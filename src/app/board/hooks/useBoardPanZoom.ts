@@ -1,16 +1,25 @@
 import { useCallback, useRef } from 'react';
+
 import { useBoardStore } from '@/store/boardStore';
 
+import { updateBoardView } from '@/entities/board/api/board.api';
+
+import { useDebounce } from '@/hooks/useDebounce';
+
 export const useBoardPanZoom = () => {
+  const isDragging = useRef(false);
+  const last = useRef({ x: 0, y: 0 });
+
   const x = useBoardStore((state) => state.x);
   const y = useBoardStore((state) => state.y);
   const zoom = useBoardStore((state) => state.zoom);
-
   const setPosition = useBoardStore((state) => state.setPosition);
-  const setZoom = useBoardStore((state) => state.setZoom);
 
-  const isDragging = useRef(false);
-  const last = useRef({ x: 0, y: 0 });
+  const debounce = useDebounce(500);
+
+  const saveView = useCallback(() => {
+    updateBoardView({ x, y, zoom });
+  }, [x, y, zoom]);
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     isDragging.current = true;
@@ -32,20 +41,27 @@ export const useBoardPanZoom = () => {
   );
 
   const onMouseUp = useCallback(() => {
-    isDragging.current = false;
+    if (isDragging.current) {
+      isDragging.current = false;
+
+      saveView();
+    }
+  }, [saveView]);
+
+  const onWheel = useCallback((e: React.WheelEvent) => {
+    const state = useBoardStore.getState();
+
+    const delta = -e.deltaY * 0.001;
+    const newZoom = Math.min(Math.max(state.zoom + delta, 0.1), 5);
+
+    state.setZoom(newZoom);
+
+    debounce(() => {
+      const latest = useBoardStore.getState();
+
+      updateBoardView(latest);
+    });
   }, []);
-
-  const onWheel = useCallback(
-    (e: React.WheelEvent) => {
-      e.preventDefault();
-
-      const delta = -e.deltaY * 0.001;
-      const newZoom = Math.min(Math.max(zoom + delta, 0.1), 5);
-
-      setZoom(newZoom);
-    },
-    [zoom, setZoom],
-  );
 
   return {
     onMouseDown,
