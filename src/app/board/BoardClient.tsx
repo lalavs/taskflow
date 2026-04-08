@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import Link from 'next/link';
 
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
@@ -45,7 +46,9 @@ const BoardClient = ({ initialNotes, initialView }: IBoardClientProps) => {
     <main className="h-screen w-screen overflow-hidden">
       <header className="fixed top-0 left-0 w-full z-9999 h-16 bg-gray-50 shadow-sm">
         <Container className="flex h-16 items-center justify-between">
-          <Logo />
+          <Link href="/">
+            <Logo />
+          </Link>
 
           <Button onClick={handleAddCard}>Add Card</Button>
         </Container>
