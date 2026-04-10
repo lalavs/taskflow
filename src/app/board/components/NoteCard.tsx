@@ -14,7 +14,7 @@ import { useAI } from '@/hooks/useAI';
 
 import { AIAction } from '@/types/ai-actions';
 
-interface INoteCardProps {
+interface NoteCardProps {
   id: string;
   x: number;
   y: number;
@@ -24,7 +24,7 @@ interface INoteCardProps {
   isSelected: boolean;
 }
 
-export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: INoteCardProps) => {
+export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: NoteCardProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -117,11 +117,7 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: I
       onClick={onNoteClick}
       onDoubleClick={onDoubleNoteClick}
     >
-      <AIActions
-        loading={isAIResponseLoading}
-        isVisible={isEditing}
-        onRun={handleAI}
-      />
+      <AIActions loading={isAIResponseLoading} isVisible={isEditing} onRun={handleAI} />
 
       <textarea
         ref={textareaRef}

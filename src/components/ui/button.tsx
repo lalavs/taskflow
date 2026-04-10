@@ -10,11 +10,11 @@ const variants = {
   helper: 'bg-white text-gray-700 shadow-sm border border-gray-100 hover:bg-gray-50 px-3 py-1.5 text-xs gap-2',
 } as const;
 
-interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: keyof typeof variants;
 }
 
-export const Button = ({ variant = 'primary', className, children, ...props }: IButtonProps) => {
+export const Button = ({ variant = 'primary', className, children, ...props }: ButtonProps) => {
   return (
     <button className={clsx(baseStyles, variants[variant], className)} {...props}>
       {children}

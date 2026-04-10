@@ -1,18 +1,18 @@
 import { create } from 'zustand';
 
-import { IBoard } from '@/types/board';
+import { Board } from '@/types/board';
 
-interface IBoardState {
+interface BoardState {
   x: number;
   y: number;
   zoom: number;
 
   setPosition: (x: number, y: number) => void;
   setZoom: (zoom: number) => void;
-  initializeState: (state: IBoard) => void;
+  initializeState: (state: Board) => void;
 }
 
-export const useBoardStore = create<IBoardState>((set) => ({
+export const useBoardStore = create<BoardState>((set) => ({
   x: 0,
   y: 0,
   zoom: 1,

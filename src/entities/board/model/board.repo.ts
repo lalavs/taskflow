@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 
-import { IBoard } from '@/types/board';
+import { Board } from '@/types/board';
 
 export const getBoardView = async (userId: string) => {
   return await prisma.boardView.upsert({
@@ -12,7 +12,7 @@ export const getBoardView = async (userId: string) => {
   });
 };
 
-export const updateBoardView = async (data: IBoard, userId: string) => {
+export const updateBoardView = async (data: Board, userId: string) => {
   return prisma.boardView.update({
     where: { userId },
     data,

@@ -1,4 +1,4 @@
-export interface IBoard {
+export interface Board {
   x: number;
   y: number;
   zoom: number;

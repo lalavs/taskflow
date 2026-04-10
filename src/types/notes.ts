@@ -1,10 +1,10 @@
-export interface INoteContent {
+export interface NoteContent {
   x: number;
   y: number;
   content: string;
   height: number;
 }
 
-export interface INote extends INoteContent {
+export interface Note extends NoteContent {
   id: string;
 }

@@ -5,11 +5,11 @@ import { useCardStore } from '@/store/cardStore';
 import { useBoardPanZoom } from '../hooks/useBoardPanZoom';
 import { useRef } from 'react';
 
-interface IBoardCanvasProps {
+interface BoardCanvasProps {
   children?: React.ReactNode;
 }
 
-export const BoardCanvas = ({ children }: IBoardCanvasProps) => {
+export const BoardCanvas = ({ children }: BoardCanvasProps) => {
   const x = useBoardStore((state) => state.x);
   const y = useBoardStore((state) => state.y);
   const zoom = useBoardStore((state) => state.zoom);

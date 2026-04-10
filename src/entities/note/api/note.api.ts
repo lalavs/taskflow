@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import { INoteContent } from '@/types/notes';
+import { NoteContent } from '@/types/notes';
 
-export const updateNote = async (id: string, data: INoteContent) => {
+export const updateNote = async (id: string, data: NoteContent) => {
   const res = await axios.patch(`/api/notes/${id}`, data);
 
   return res.data;

@@ -1,20 +1,20 @@
 import { create } from 'zustand';
 
-import { INote } from '@/types/notes';
+import { Note } from '@/types/notes';
 
-interface ICardState {
-  cards: INote[];
+interface CardState {
+  cards: Note[];
   selectedCardId: string | null;
 
-  addCard: (card: INote) => void;
-  setCards: (cards: INote[]) => void;
+  addCard: (card: Note) => void;
+  setCards: (cards: Note[]) => void;
   moveCard: (id: string, x: number, y: number) => void;
-  updateCard: (id: string, updates: Partial<INote>) => void;
+  updateCard: (id: string, updates: Partial<Note>) => void;
   setSelectedCardId: (id: string | null) => void;
   deleteCard: (id: string) => void;
 }
 
-export const useCardStore = create<ICardState>((set) => ({
+export const useCardStore = create<CardState>((set) => ({
   cards: [],
   selectedCardId: null,
 

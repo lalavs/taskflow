@@ -27,7 +27,7 @@ export const AIActions = ({ loading, isVisible, onRun }: AIActionsProps) => {
   const onAIMenuMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-};
+  };
 
   if (!isVisible) return null;
 

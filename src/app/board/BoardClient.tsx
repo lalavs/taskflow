@@ -15,15 +15,15 @@ import { useBoardStore } from '@/store/boardStore';
 
 import { usePageActions } from './hooks/usePageActions';
 
-import { INote } from '@/types/notes';
-import { IBoard } from '@/types/board';
+import { Note } from '@/types/notes';
+import { Board } from '@/types/board';
 
-interface IBoardClientProps {
-  initialNotes: INote[];
-  initialView: IBoard;
+interface BoardClientProps {
+  initialNotes: Note[];
+  initialView: Board;
 }
 
-const BoardClient = ({ initialNotes, initialView }: IBoardClientProps) => {
+const BoardClient = ({ initialNotes, initialView }: BoardClientProps) => {
   const setCards = useCardStore((state) => state.setCards);
   const initializeState = useBoardStore((state) => state.initializeState);
 
