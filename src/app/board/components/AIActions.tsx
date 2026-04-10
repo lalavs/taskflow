@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { clsx } from 'clsx';
+import { Sparkles, Wrench, PencilLine } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
 
@@ -36,10 +37,12 @@ export const AIActions = ({ loading, isVisible, onRun }: AIActionsProps) => {
       {isOpen && (
         <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
           <Button variant="helper" onClick={() => handleActionClick(AI_ACTIONS.IMPROVE)} onMouseDown={(e) => e.preventDefault()}>
+            <Sparkles size={14} className="text-orange-400" />
             Improve
           </Button>
 
           <Button variant="helper" onClick={() => handleActionClick(AI_ACTIONS.SUMMARIZE)} onMouseDown={(e) => e.preventDefault()}>
+            <PencilLine size={14} className="text-blue-400" />
             Summary
           </Button>
         </div>
@@ -56,7 +59,7 @@ export const AIActions = ({ loading, isVisible, onRun }: AIActionsProps) => {
         {loading ? (
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
         ) : (
-          <span className="text-lg select-none">AI</span>
+          <Wrench size={16} className={clsx('transition-transform duration-300', isOpen && 'rotate-90')} fill={isOpen ? 'currentColor' : 'none'} />
         )}
       </button>
     </div>
