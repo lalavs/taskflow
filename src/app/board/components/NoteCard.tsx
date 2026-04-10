@@ -1,12 +1,18 @@
 'use client';
 
-import { memo, useRef, useState, useEffect } from 'react';
+import { memo, useRef, useState, useEffect, useCallback } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import clsx from 'clsx';
 
+import { AIActions } from './AIActions';
+
 import { updateNote } from '@/entities/note/api/note.api';
 import { useCardStore } from '@/store/cardStore';
+
 import { useDebounce } from '@/hooks/useDebounce';
+import { useAI } from '@/hooks/useAI';
+
+import { AIAction } from '@/types/ai-actions';
 
 interface INoteCardProps {
   id: string;
@@ -20,11 +26,10 @@ interface INoteCardProps {
 
 export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: INoteCardProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   const [isEditing, setIsEditing] = useState(false);
 
+  const { isAIResponseLoading, runAI } = useAI();
   const { attributes, listeners, transform, setNodeRef } = useDraggable({ id });
-  const debounce = useDebounce(500);
 
   const updateCard = useCardStore((state) => state.updateCard);
   const setSelectedCardId = useCardStore((state) => state.setSelectedCardId);
@@ -38,6 +43,15 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: I
   };
 
   const dragListeners = isEditing ? undefined : listeners;
+
+  const debounce = useDebounce(500);
+
+  const saveNoteToServer = useCallback(() => {
+    const current = useCardStore.getState().cards.find((c) => c.id === id);
+    if (!current) return;
+
+    updateNote(id, current);
+  }, [id]);
 
   const onNoteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -60,17 +74,26 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: I
 
     updateCard(id, { content: newContent, height: newHeight });
 
-    debounce(() => {
-      const current = useCardStore.getState().cards.find((c) => c.id === id);
-
-      if (!current) return;
-
-      updateNote(id, current);
-    });
+    debounce(saveNoteToServer);
   };
 
   const onBlur = () => {
     setIsEditing(false);
+  };
+
+  const handleAI = async (action: AIAction) => {
+    if (!content.trim()) return;
+
+    const result = await runAI(content, action);
+
+    if (result) {
+      updateCard(id, {
+        content: result,
+        height: textareaRef.current?.scrollHeight || height,
+      });
+
+      debounce(saveNoteToServer);
+    }
   };
 
   useEffect(() => {
@@ -87,16 +110,23 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: I
       {...attributes}
       suppressHydrationWarning
       className={clsx(
-        'w-72 p-7 rounded-md shadow transition-shadow duration-200 select-none',
+        'relative w-72 p-7 rounded-md shadow transition-shadow duration-200 select-none',
         isSelected && 'ring-2 ring-blue-400',
         isEditing ? ' bg-orange-100 cursor-text' : 'bg-orange-200 cursor-move',
       )}
       onClick={onNoteClick}
       onDoubleClick={onDoubleNoteClick}
     >
+      <AIActions
+        loading={isAIResponseLoading}
+        isVisible={isEditing}
+        onRun={handleAI}
+      />
+
       <textarea
         ref={textareaRef}
         value={content}
+        disabled={isAIResponseLoading}
         className={clsx(
           'bg-transparent resize-none focus:outline-none text-gray-800 text-sm w-full [&::-webkit-scrollbar]:hidden',
           !isEditing && 'pointer-events-none',

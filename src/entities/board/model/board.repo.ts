@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 
-import { IBoard } from '@/interfaces/board';
+import { IBoard } from '@/types/board';
 
 export const getBoardView = async (userId: string) => {
   return await prisma.boardView.upsert({

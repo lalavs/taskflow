@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { INote } from '@/interfaces/notes';
+import { INote } from '@/types/notes';
 
 interface ICardState {
   cards: INote[];

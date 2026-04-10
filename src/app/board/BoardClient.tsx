@@ -15,8 +15,8 @@ import { useBoardStore } from '@/store/boardStore';
 
 import { usePageActions } from './hooks/usePageActions';
 
-import { INote } from '@/interfaces/notes';
-import { IBoard } from '@/interfaces/board';
+import { INote } from '@/types/notes';
+import { IBoard } from '@/types/board';
 
 interface IBoardClientProps {
   initialNotes: INote[];

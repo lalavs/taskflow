@@ -38,9 +38,7 @@ export const Header = () => {
               </Button>
             </>
           ) : (
-            <Button onClick={() => signIn('google')}>
-              Login
-            </Button>
+            <Button onClick={() => signIn('google')}>Login</Button>
           )}
         </nav>
       </Container>

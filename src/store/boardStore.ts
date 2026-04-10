@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { IBoard } from '@/interfaces/board';
+import { IBoard } from '@/types/board';
 
 interface IBoardState {
   x: number;
