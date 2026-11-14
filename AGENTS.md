@@ -54,6 +54,10 @@ axios, OpenAI через OpenRouter. Знания о проекте — в `memo
 | `npm start`                                | запуск собранного приложения                                      |
 | `npm run lint`                             | ESLint 9, flat config `eslint.config.mjs`                         |
 | `npm run lint:fix`                         | ESLint с `--fix`                                                  |
+| `npm test`                                 | Jest: юнит- и компонентные тесты `src/**/*.test.ts(x)`            |
+| `npm run test:coverage`                    | Jest с покрытием в `coverage/`                                    |
+| `npm run test:e2e`                         | Playwright: `e2e/*.spec.ts`, поднимает dev-сервер на порту 3000   |
+| `npm run test:mutate`                      | Stryker: мутации `src/hooks`, `src/store`, отчёт в `reports/`     |
 | `npx tsc --noEmit`                         | проверка типов (скрипта `typecheck` в `package.json` нет)         |
 | `npm run format`                           | Prettier по всему репозиторию, включая `.md` — запускай осознанно |
 | `npx prettier --write` / `--check <файлы>` | точечное форматирование изменённых файлов                         |
@@ -70,10 +74,20 @@ axios, OpenAI через OpenRouter. Знания о проекте — в `memo
 
 - Минимум после изменений: `npm run lint`, `npx tsc --noEmit`, `npm run build`; поведение проверяется запуском
   `npm run dev` и прохождением затронутого сценария.
-- Автотестов в проекте нет: Jest, Playwright, Stryker и Testing Library не установлены, каталогов `__tests__/` и `tests/`
-  нет. Не выдумывай `npm test`, `npm run e2e`, `npm run mutate` — таких скриптов не существует.
-- Внедрение тестового стека — только с согласования (новые зависимости); после согласования соглашения (каталог, имя
-  `<модуль>.test.ts(x)`, моки `@/*`) фиксируются здесь же.
+- Автотесты: Jest 30 + `next/jest` (конфиг `jest.config.mjs`, окружение `jsdom`, `jest.setup.ts` с
+  `@testing-library/jest-dom`), юнит- и компонентные тесты лежат рядом с модулем как `<модуль>.test.ts(x)` в `src/**`,
+  стек `@testing-library/react` + `user-event`, алиас `@/*` работает через `moduleNameMapper`.
+- E2E — Playwright: спеки `e2e/*.spec.ts`, конфиг `playwright.config.ts` (chromium, `webServer` = `npm run dev`,
+  `baseURL` = `http://localhost:3000`); браузер ставится один раз — `npx playwright install chromium`.
+- Мутации — Stryker (`stryker.config.json`): `mutate` ограничен `src/hooks/**` и `src/store/**`, отчёт —
+  `reports/mutation/index.html`; плагин `@stryker-mutator/jest-runner` указан в `plugins` явно, иначе pnpm-раскладка не
+  находится.
+- Jest без `ts-node`: конфиг — `.mjs` с JSDoc-типами. `testMatch` держи относительным (`**/*.test.{ts,tsx}` при
+  `roots: ['<rootDir>/src']`): путь вида `<rootDir>/src/**` не матчится внутри песочницы `.stryker-tmp`, и мутационный
+  прогон падает с «No tests were found».
+- Артефакты прогонов (`coverage/`, `reports/`, `playwright-report/`, `test-results/`, `.stryker-tmp/`) не коммить — они в
+  `.gitignore`. Скриптов только пять: `npm test`, `npm run test:watch`, `npm run test:coverage`, `npm run test:e2e`,
+  `npm run test:mutate` — других не выдумывай.
 - Не сообщай о пройденных проверках, которых не запускал.
 
 ## Данные
@@ -91,8 +105,8 @@ axios, OpenAI через OpenRouter. Знания о проекте — в `memo
 
 - `npm run lint` падает до линтинга: `eslint.config.mjs` спредит `eslint-config-prettier` (`...prettier`), а версия 10
   экспортирует объект, а не массив — `TypeError: prettier is not iterable`.
-- `npx tsc --noEmit` падает на `prisma.config.ts`: `TS2307: Cannot find module 'prisma/config'` — пакета `prisma` нет в
-  `devDependencies`, он доступен только транзитивно.
+- `npx tsc --noEmit` и шаг TypeScript в `npm run build` падают на `prisma.config.ts`: `TS2307: Cannot find module 'prisma/config'`
+  — пакета `prisma` нет в `devDependencies`, он доступен только транзитивно.
 
 ## Memory Bank
 

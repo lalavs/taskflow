@@ -31,4 +31,19 @@
 - Prisma 7 + `@prisma/adapter-pg`: подключение и singleton — `src/lib/db.ts`, конфиг CLI — `prisma.config.ts` (берёт `DATABASE_URL`)
 - Prisma Client генерируется в `postinstall`; каталога `prisma/migrations` нет — история схемы не инициализирована
 - Пакетный менеджер — pnpm (`pnpm-lock.yaml`, `node_modules/.pnpm`), но CLI `pnpm` в среде недоступна: скрипты через `npm run`
-- Автотестов нет; сломанные проверки — `D-01` (`npm run lint`), `D-02` (`npx tsc --noEmit`)
+- Сломанные проверки — `D-01` (`npm run lint`), `D-02` (`npx tsc --noEmit`)
+
+## Тесты
+
+- Jest 30 + `next/jest` (SWC-трансформ, без `ts-node` и Babel): конфиг `jest.config.mjs` (JSDoc-типы), окружение `jsdom`;
+  `jest.setup.ts` подключает `@testing-library/jest-dom`
+- Юнит- и компонентные тесты лежат рядом с модулем: `src/**/*.test.ts(x)`, стек `@testing-library/react` + `user-event`,
+  алиас `@/*` маппится в `moduleNameMapper`
+- E2E — Playwright (`@playwright/test`) в `e2e/*.spec.ts`, конфиг `playwright.config.ts`: chromium, `baseURL`
+  `http://localhost:3000`, `webServer` поднимает `npm run dev`; браузер ставится `npx playwright install chromium`
+- Мутации — Stryker (`stryker.config.json`, плагин `@stryker-mutator/jest-runner`): `mutate` — `src/hooks/**`, `src/store/**`,
+  отчёт `reports/mutation/index.html`. `plugins` задан явно: при pnpm-раскладке автопоиск `@stryker-mutator/*` не срабатывает
+- Скрипты: `npm test`, `npm run test:coverage`, `npm run test:e2e`, `npm run test:mutate`
+- Ловушка: `testMatch` задаётся относительно (`**/*.test.{ts,tsx}` при `roots: ['<rootDir>/src']`), а не как
+  `<rootDir>/src/**` — иначе песочница Stryker в `.stryker-tmp` не матчится (glob не пересекает сегмент с точкой) и прогон
+  падает с «No tests were found»
