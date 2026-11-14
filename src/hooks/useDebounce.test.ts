@@ -44,4 +44,22 @@ describe('useDebounce', () => {
     expect(first).not.toHaveBeenCalled();
     expect(second).toHaveBeenCalledTimes(1);
   });
+
+  it('falls back to the default delay', () => {
+    const { result } = renderHook(() => useDebounce());
+    const callback = jest.fn();
+
+    act(() => {
+      result.current(callback);
+      jest.advanceTimersByTime(499);
+    });
+
+    expect(callback).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
 });

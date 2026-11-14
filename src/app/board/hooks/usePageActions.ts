@@ -22,7 +22,9 @@ export const usePageActions = () => {
 
       const card = useCardStore.getState().cards.find((c) => c.id === active.id);
 
-      if (!card) return;
+      if (!card) {
+        return;
+      }
 
       const { zoom } = useBoardStore.getState();
 
@@ -61,7 +63,9 @@ export const usePageActions = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (document.activeElement instanceof HTMLTextAreaElement) return;
+        if (document.activeElement instanceof HTMLTextAreaElement) {
+          return;
+        }
 
         const selectedId = useCardStore.getState().selectedCardId;
 

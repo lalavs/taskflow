@@ -7,7 +7,9 @@ import { getBoardView, updateBoardView } from '@/entities/board/model/board.repo
 export async function GET() {
   try {
     const session = await auth();
-    if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const view = await getBoardView(session.user.id);
     return NextResponse.json(view);
@@ -20,7 +22,9 @@ export async function GET() {
 export async function PATCH(req: Request) {
   try {
     const session = await auth();
-    if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const body = await req.json();
 

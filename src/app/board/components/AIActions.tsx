@@ -30,7 +30,9 @@ export const AIActions = ({ loading, isVisible, onRun }: AIActionsProps) => {
     e.stopPropagation();
   };
 
-  if (!isVisible) return null;
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className="absolute top-2 right-2 z-50 flex flex-col items-end gap-2">

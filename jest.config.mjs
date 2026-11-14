@@ -14,6 +14,14 @@ const config = {
   },
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.test.{ts,tsx}', '!src/types/**', '!src/**/*.d.ts'],
   coverageDirectory: 'coverage',
+  coverageThreshold: {
+    global: {
+      statements: 85,
+      branches: 85,
+      functions: 85,
+      lines: 85,
+    },
+  },
 };
 
 export default createJestConfig(config);

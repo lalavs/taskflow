@@ -48,7 +48,9 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: N
 
   const saveNoteToServer = useCallback(() => {
     const current = useCardStore.getState().cards.find((c) => c.id === id);
-    if (!current) return;
+    if (!current) {
+      return;
+    }
 
     updateNote(id, current);
   }, [id]);
@@ -82,7 +84,9 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: N
   };
 
   const handleAI = async (action: AIAction) => {
-    if (!content.trim()) return;
+    if (!content.trim()) {
+      return;
+    }
 
     const result = await runAI(content, action);
 
@@ -136,3 +140,5 @@ export const NoteCard = memo(({ id, x, y, content, height, zoom, isSelected }: N
     </div>
   );
 });
+
+NoteCard.displayName = 'NoteCard';
