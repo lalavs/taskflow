@@ -6,11 +6,11 @@ import prettier from 'eslint-config-prettier';
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  ...prettier,
+  prettier,
 
   {
     rules: {
-      quotes: ['error', 'single'],
+      quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
       indent: ['error', 2],
       curly: ['error', 'all'],

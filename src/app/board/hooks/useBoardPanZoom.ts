@@ -28,7 +28,9 @@ export const useBoardPanZoom = () => {
 
   const onMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!isDragging.current) return;
+      if (!isDragging.current) {
+        return;
+      }
 
       const dx = e.clientX - last.current.x;
       const dy = e.clientY - last.current.y;
@@ -48,20 +50,23 @@ export const useBoardPanZoom = () => {
     }
   }, [saveView]);
 
-  const onWheel = useCallback((e: React.WheelEvent) => {
-    const state = useBoardStore.getState();
+  const onWheel = useCallback(
+    (e: React.WheelEvent) => {
+      const state = useBoardStore.getState();
 
-    const delta = -e.deltaY * 0.001;
-    const newZoom = Math.min(Math.max(state.zoom + delta, 0.1), 5);
+      const delta = -e.deltaY * 0.001;
+      const newZoom = Math.min(Math.max(state.zoom + delta, 0.1), 5);
 
-    state.setZoom(newZoom);
+      state.setZoom(newZoom);
 
-    debounce(() => {
-      const latest = useBoardStore.getState();
+      debounce(() => {
+        const latest = useBoardStore.getState();
 
-      updateBoardView(latest);
-    });
-  }, []);
+        updateBoardView(latest);
+      });
+    },
+    [debounce],
+  );
 
   return {
     onMouseDown,

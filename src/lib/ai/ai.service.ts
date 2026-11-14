@@ -14,8 +14,8 @@ const SYSTEM_INSTRUCTION =
 
 const PROMPTS: Record<AIAction, (text: string) => string> = {
   improve: (text) =>
-    `Rewrite the following text to make it clearer, more professional, and grammatically correct. ` + `Output ONLY the rewritten text.\n\n${text}`,
-  summarize: (text) => `Summarize the following text concisely. ` + `Output ONLY the summary.\n\n${text}`,
+    'Rewrite the following text to make it clearer, more professional, and grammatically correct. ' + `Output ONLY the rewritten text.\n\n${text}`,
+  summarize: (text) => 'Summarize the following text concisely. ' + `Output ONLY the summary.\n\n${text}`,
 };
 
 export const runAI = async (text: string, action: AIAction) => {

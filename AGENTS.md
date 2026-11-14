@@ -98,21 +98,12 @@ axios, OpenAI через OpenRouter. Знания о проекте — в `memo
 Каталога `prisma/migrations` пока нет — история миграций не инициализирована. Без явного разрешения: `prisma migrate dev/reset`,
 `prisma db push`, ручные DDL/DROP и любые операции, меняющие данные в подключённой базе.
 
-## Известные ограничения окружения
-
-Оба дефекта существуют до правок и не являются регрессией ваших изменений. Не обходи их заглушками, `@ts-expect-error`,
-удалением конфига или правкой `package.json` без согласования — фиксируй как известное ограничение.
-
-- `npm run lint` падает до линтинга: `eslint.config.mjs` спредит `eslint-config-prettier` (`...prettier`), а версия 10
-  экспортирует объект, а не массив — `TypeError: prettier is not iterable`.
-- `npx tsc --noEmit` и шаг TypeScript в `npm run build` падают на `prisma.config.ts`: `TS2307: Cannot find module 'prisma/config'`
-  — пакета `prisma` нет в `devDependencies`, он доступен только транзитивно.
-
 ## Memory Bank
 
 `memory-bank/index.md` — карта документов и маршрутизация; открывай его первым и читай только нужные документы.
 Документы: `projectbrief.md` (границы и инварианты), `techContext.md` (HTTP-контракт и окружение), `systemPatterns.md`
-(решения и поток данных), `defects.md` (открытые дефекты и долги).
-`memory-bank/maintenance.md` и `memory-bank/activeContextRules.md` подгружай только при обновлении банка.
+(решения и поток данных), `defects.md` (открытые дефекты и долги), `local/activeContext.md` (чекпоинт текущей задачи).
+`memory-bank/maintenance.md` подгружай только при обновлении банка; `memory-bank/activeContextRules.md` читай перед
+завершением **каждой** задачи: чекпоинт `memory-bank/local/activeContext.md` обязателен, без него задача не завершена.
 Если документация противоречит коду — выясни причину, а не предполагай; состояние проекта в документах не хранится
 (источник — код и `git log`), архитектуру и технические решения фиксируй при их изменении.
