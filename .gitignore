@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
+/reports
+/.stryker-tmp
+/.swc
 
 # next.js
 /.next/
@@ -39,3 +44,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# memory bank (личные чекпоинты)
+/memory-bank/local/
