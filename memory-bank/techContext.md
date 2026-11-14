@@ -31,7 +31,7 @@
 - Prisma 7 + `@prisma/adapter-pg`: подключение и singleton — `src/lib/db.ts`, конфиг CLI — `prisma.config.ts` (берёт `DATABASE_URL`)
 - Prisma Client генерируется в `postinstall`; каталога `prisma/migrations` нет — история схемы не инициализирована
 - Пакетный менеджер — pnpm (`pnpm-lock.yaml`, `node_modules/.pnpm`), но CLI `pnpm` в среде недоступна: скрипты через `npm run`
-- Сломанные проверки — `D-01` (`npm run lint`), `D-02` (`npx tsc --noEmit`)
+- Проверки `npm run lint`, `npx tsc --noEmit` и `npm run build` проходят; CLI `prisma` подключён в `devDependencies`
 
 ## Тесты
 

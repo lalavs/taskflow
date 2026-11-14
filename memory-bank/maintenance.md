@@ -25,6 +25,7 @@
 
 ## Правила
 
+- Чекпоинт `local/activeContext.md` обязателен после каждой задачи; правила — `activeContextRules.md`
 - Один факт — в одном файле, в остальных ссылка («см. `techContext.md`»); запись = утверждение + путь к источнику, без
   кода, логов и пересказа `schema.prisma` или конфигов
 - Документируй намерение, причину, отвергнутые варианты, ограничения и контракты — то, чего не выводится из кода;
@@ -38,15 +39,16 @@
 - Документ противоречит коду — исправь документ в той же задаче; документ противоречит документу — дефект ревью
 - Новый документ — строка в таблице `index.md` и целевой бюджет в таблице выше; удалённый — его строки убрать
 - Изменил структуру банка — обнови `index.md`, этот файл, `activeContextRules.md` и `AGENTS.md` §«Memory Bank»
-- Правила ведения и чекпоинта не дублируй в `index.md` и `AGENTS.md`: там только ссылка на файл правил и бюджет загрузки
-  задачи, он нужен в каждой задаче
+- Правила ведения и чекпоинта не дублируй в `index.md` и `AGENTS.md`: там только ссылка на файл правил, обязательность
+  чекпоинта и бюджет загрузки задачи, он нужен в каждой задаче
 
 ## Проверка перед сдачей
 
+- `local/activeContext.md` создан или обновлён в этой задаче; шапка совпадает с `git rev-parse` и `git status`
 - Дублей нет — кандидаты на дубль не выводятся (каждый факт живёт в одном файле, инструкции исключены):
 
   ```bash
-  grep -rnoE '0\.1–5|distance: 6|debounce 500|IDOR' memory-bank/*.md \
+  grep -rnoE '0\.1–5|distance: 6|debounce 500|IDOR' memory-bank/*.md memory-bank/local/*.md \
     | grep -vE 'index|maintenance|activeContextRules' | cut -d: -f3 | sort | uniq -d
   ```
 
@@ -55,11 +57,10 @@
 - Объём документов в пределах целевых бюджетов; превышение — зафиксируй причину, а не молча оставляй:
 
   ```bash
-  node -e 'const fs=require("fs");for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,"utf8");const c=(s.match(/[\u0400-\u04FF]/g)||[]).length;console.log(f,Math.round(c/2+(s.length-c)/4))}' memory-bank/*.md
+  node -e 'const fs=require("fs");for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,"utf8");const c=(s.match(/[\u0400-\u04FF]/g)||[]).length;console.log(f,Math.round(c/2+(s.length-c)/4))}' memory-bank/*.md memory-bank/local/*.md
   ```
 
-  Чекпоинт `local/activeContext.md` добавь в команду, когда он появится.
-
-- `npx prettier --check memory-bank/*.md` зелёный
-- Пути и имена документов существуют (`ls memory-bank/`; `local/activeContext.md` создаётся при первом чекпоинте,
-  исключение — `AGENTS.md`), чекпоинт отражает текущую сессию; удалённый документ не упомянут в правилах и `AGENTS.md`
+- `npx prettier --check --ignore-path .prettierignore memory-bank/*.md memory-bank/local/*.md` зелёный (Prettier 3 иначе
+  пропускает `local/` из-за `.gitignore`)
+- Пути и имена документов существуют (`ls memory-bank/`; `local/activeContext.md` создаётся при первом чекпоинте и
+  обновляется после каждой задачи), чекпоинт отражает текущую сессию; удалённый документ не упомянут в правилах и `AGENTS.md`
